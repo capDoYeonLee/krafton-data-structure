@@ -14,12 +14,12 @@ Purpose: Implementing the required functions for Question 1 */
 typedef struct _listnode{
 	int item;
 	struct _listnode *next;
-} ListNode;			// You should not change the definition of ListNode
+} ListNode;
 
 typedef struct _linkedlist{
 	int size;
 	ListNode *head;
-} LinkedList;			// You should not change the definition of LinkedList
+} LinkedList;
 
 
 ///////////////////////// function prototypes ////////////////////////////////////
@@ -90,7 +90,28 @@ int main()
 
 int insertSortedLL(LinkedList *ll, int item)
 {
-	/* add your code here */
+	int index = 0;
+	ListNode *newNode = (ListNode *)malloc(sizeof(ListNode));
+	newNode -> item = item;
+	newNode -> next = NULL;
+
+	if (ll->head == NULL || item < ll->head -> item) {
+		newNode -> next = ll->head;
+		ll->head = newNode;
+		ll->size++;
+		return 0;
+	}
+
+	ListNode *cur = ll->head;
+	while (cur -> next != NULL && cur->next->item < item) {
+		cur = cur -> next;
+		index++;
+	}
+
+	newNode -> next = cur -> next;
+	cur -> next = newNode;
+	ll->size++;
+	return index + 1;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
