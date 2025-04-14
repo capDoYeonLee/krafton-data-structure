@@ -86,7 +86,7 @@ int main()
 			printList(&ll);
 			break;
 		case 2:
-			removeAllItemsFromQueue(&q);
+			removeAllItemsFromQueue(&q); 
 			createQueueFromLinkedList(&ll, &q); // You need to code this function
 			printf("The resulting queue is: ");
 			printList(&(q.ll));
@@ -120,6 +120,8 @@ void createQueueFromLinkedList(LinkedList *ll, Queue *q)
 	ListNode *cur = ll->head;
 	while (cur != NULL) {
 		enqueue(q, cur->item);
+		// q는 내부에 LinkedList ll을 포함하고 있기 때문에 enqueue()는 내부적으로 insertNode(&(q->ll), q->ll.size, item)을 호출해 q.ll에 노드 추가하고,
+		// 따라서 enqueue 호출 전 q에는 아무런 노드도 있으면 안 된다. => main에서 createQueueFromLinkedList 호출 전 removeAllItemsFromQueue를 호출
 		cur = cur->next;
 	}
 }
