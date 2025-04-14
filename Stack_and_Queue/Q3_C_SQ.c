@@ -33,6 +33,8 @@ typedef struct stack{
 
 // You should not change the prototypes of these functions
 int isStackPairwiseConsecutive(Stack *s);
+void createStack(Stack *s);
+
 
 void push(Stack *s, int item);
 int pop(Stack *s);
@@ -101,9 +103,49 @@ int main()
 
 /////////////////////////////////////////////////////////////////////////////////
 
-int isStackPairwiseConsecutive(Stack *s)
-{
-  /* add your code here */
+int isStackPairwiseConsecutive(Stack *s) {
+	/* add your code here */
+	// if(s==NULL){
+	// 	return 0;
+	// }
+	// ListNode *cur = s->ll.head;
+	// while(cur != NULL){
+	// 	ListNode *tmp = cur->next;
+	// 	if (cur -> item - tmp -> item == 1 ){
+	// 		cur = tmp	-> next;
+	// 	}
+	// 	else{
+	// 		return 0;
+	// 	}
+	// }
+	// return 1;
+	Stack tempStack;
+	createStack(&tempStack);
+
+	int result = 1;
+
+	while (!isEmptyStack(s)) {
+		int first = pop(s);
+		push(&tempStack, first);
+
+		if (!isEmptyStack(s)) {
+			int second = pop(s);
+			push(&tempStack, second);
+			if (abs(first - second) != 1) {
+				return 0;
+			}
+		}
+	}
+
+	while (!isEmptyStack(&tempStack)) {
+		push(s, pop(&tempStack));
+	}
+	return result;
+}
+
+void createStack(Stack *s) {
+	s->ll.head = NULL;
+	s->ll.size = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
