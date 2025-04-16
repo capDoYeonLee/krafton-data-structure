@@ -86,13 +86,11 @@ int main()
 void moveOddItemsToBack(LinkedList *ll)
 {
 	// 노드를 하나씩 순회하면서 홀수이면 뒤로 보내기
+	if (ll == NULL) return;
 
 	// ListNode *pre, *cur;
 	int index = 0;
 	int originalSize = ll->size;
-
-	if (ll == NULL || ll->head == NULL)
-		return;
 	
 	while (index < originalSize) {
 		ListNode *node = findNode(ll, index); // findNode로 현재 노드 찾기 -> 포인터로 관리하면 좋을 것 같은데
@@ -100,7 +98,7 @@ void moveOddItemsToBack(LinkedList *ll)
 
 		// 현재 노드(cur)의 값이 홀수라면 
 		if (node->item % 2 != 0) {
-			// 현재 노드 삭제: removeNode(cur) // 삭제 안 하는 방법 찾아보기
+			// 현재 노드 삭제: removeNode(cur)
 			// 리스트 맨 뒤에 현재 노드 삽입: insertNode(cur)
 			int value = node->item;
 			removeNode(ll, index); // 현재 노드를 삭제하고 이전 노드의 next가 다음 노드를 바라보도록 
