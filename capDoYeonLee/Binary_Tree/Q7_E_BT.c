@@ -103,7 +103,7 @@ int main()
 int smallestValue(BTNode *node)
 {
     if (node == NULL)
-        return __INT_MAX__; // 아주 큰 수를 반환해서 비교 가능하게 함
+        return __INT_MAX__;
 
     int leftMin = smallestValue(node->left);
     int rightMin = smallestValue(node->right);

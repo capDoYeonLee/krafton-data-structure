@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 /* CE1007/CZ1007 Data Structures
-Lab Test: Section A - Linked List Questions
-Purpose: Implementing the required functions for Question 4 */
+Lab Test: Section C - Stack and Queue Questions
+Purpose: Implementing the required functions for Question 5 */
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -15,19 +15,30 @@ typedef struct _listnode
 {
 	int item;
 	struct _listnode *next;
-} ListNode;			// You should not change the definition of ListNode
+} ListNode;	// You should not change the definition of ListNode
 
 typedef struct _linkedlist
 {
 	int size;
 	ListNode *head;
-} LinkedList;			// You should not change the definition of LinkedList
+} LinkedList;	// You should not change the definition of LinkedList
 
 
-//////////////////////// function prototypes /////////////////////////////////////
+typedef struct _queue
+{
+	LinkedList ll;
+} Queue;  // You should not change the definition of Queue
 
-// You should not change the prototype of this function
-void moveEvenItemsToBack(LinkedList *ll);
+///////////////////////// function prototypes ////////////////////////////////////
+
+// You should not change the prototypes of these functions
+void recursiveReverse(Queue *q);
+
+// You may use the following functions or you may write your own
+void enqueue(Queue *q, int item);
+int dequeue(Queue *q);
+int isEmptyQueue(Queue *q);
+void removeAllItemsFromQueue(Queue *q);
 
 void printList(LinkedList *ll);
 void removeAllItems(LinkedList *ll);
@@ -39,17 +50,25 @@ int removeNode(LinkedList *ll, int index);
 
 int main()
 {
+	int c, i;
 	LinkedList ll;
-	int c, i, j;
+	Queue q;
+
 	c = 1;
-	//Initialize the linked list 1 as an empty linked list
+
+	// Initialize the linked list as an empty linked list
 	ll.head = NULL;
 	ll.size = 0;
 
+	// Initialize the Queue as an empty queue
+	q.ll.head = NULL;
+	q.ll.size = 0;
 
-	printf("1: Insert an integer to the linked list:\n");
-	printf("2: Move all even integers to the back of the linked list:\n");
+
+	printf("1: Insert an integer into the Queue:\n");
+	printf("2: Recursively reverse the queue;\n");
 	printf("0: Quit:\n");
+
 
 	while (c != 0)
 	{
@@ -59,90 +78,54 @@ int main()
 		switch (c)
 		{
 		case 1:
-			printf("Input an integer that you want to add to the linked list: ");
+			printf("Input an integer that you want to insert into the queue: ");
 			scanf("%d", &i);
-			j = insertNode(&ll, ll.size, i);
-			printf("The resulting linked list is: ");
-			printList(&ll);
+			enqueue(&q, i);
+			printf("The resulting queue is: ");
+			printList(&q.ll);
 			break;
 		case 2:
-			moveEvenItemsToBack(&ll); // You need to code this function
-			printf("The resulting linked list after moving even integers to the back of the linked list is: ");
-			printList(&ll);
+			recursiveReverse(&q); // You need to code this function
+			printf("The resulting reversed queue is: ");
+			printList(&(q.ll));
+			removeAllItemsFromQueue(&q);
 			removeAllItems(&ll);
 			break;
 		case 0:
+			removeAllItemsFromQueue(&q);
 			removeAllItems(&ll);
 			break;
 		default:
 			printf("Choice unknown;\n");
 			break;
 		}
+
 	}
+
 	return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
 
-void moveEvenItemsToBack(LinkedList *ll)
+void recursiveReverse(Queue *q)
 {
-	if (ll == NULL || ll->head == NULL)
-		return;
-
-	ListNode *cur = ll->head;
-	ListNode *prev = NULL;
-
-	ListNode *tail = ll->head;
-	while (tail->next != NULL)
-		tail = tail->next;
-
-	ListNode *end = tail;
-
-	int n = ll->size;
-
-	while (n--) {
-		if (cur->item % 2 == 0) {
-			ListNode *evenNode = cur;
-
-			if (prev == NULL) {
-				ll->head = cur->next;
-				cur = ll->head;
-			} else {
-				prev->next = cur->next;
-				cur = cur->next;
-			}
-
-			tail->next = evenNode;
-			evenNode->next = NULL;
-			tail = evenNode;
-		} else {
-			prev = cur;
-			cur = cur->next;
-		}
-	}
+/* add your code here */
+	while
 }
 
+//////////////////////////////////////////////////////////////////
 
-
-///////////////////////////////////////////////////////////////////////////////////
-
-void printList(LinkedList *ll){
-
-	ListNode *cur;
-	if (ll == NULL)
+void removeAllItemsFromQueue(Queue *q)
+{
+	int count, i;
+	if (q == NULL)
 		return;
-	cur = ll->head;
+	count = q->ll.size;
 
-	if (cur == NULL)
-		printf("Empty");
-	while (cur != NULL)
-	{
-		printf("%d ", cur->item);
-		cur = cur->next;
-	}
-	printf("\n");
+	for (i = 0; i < count; i++)
+		dequeue(q);
 }
-
+//////////////////////////////////////////////////////////////////////////////////
 
 void removeAllItems(LinkedList *ll)
 {
@@ -158,8 +141,46 @@ void removeAllItems(LinkedList *ll)
 	ll->size = 0;
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
-ListNode *findNode(LinkedList *ll, int index){
+void enqueue(Queue *q, int item) {
+	insertNode(&(q->ll), q->ll.size, item);
+}
+
+int dequeue(Queue *q) {
+	int item;
+
+	if (!isEmptyQueue(q)) {
+		item = ((q->ll).head)->item;
+		removeNode(&(q->ll), 0);
+		return item;
+	}
+	return -1;
+}
+
+int isEmptyQueue(Queue *q) {
+	if ((q->ll).size == 0)
+		return 1;
+	return 0;
+}
+
+void printList(LinkedList *ll){
+
+	ListNode *cur;
+	if (ll == NULL)
+		return;
+	cur = ll->head;
+	if (cur == NULL)
+		printf("Empty");
+	while (cur != NULL)
+	{
+		printf("%d ", cur->item);
+		cur = cur->next;
+	}
+	printf("\n");
+}
+
+ListNode * findNode(LinkedList *ll, int index){
 
 	ListNode *temp;
 
@@ -192,6 +213,10 @@ int insertNode(LinkedList *ll, int index, int value){
 	if (ll->head == NULL || index == 0){
 		cur = ll->head;
 		ll->head = malloc(sizeof(ListNode));
+		if (ll->head == NULL)
+		{
+			exit(0);
+		}
 		ll->head->item = value;
 		ll->head->next = cur;
 		ll->size++;
@@ -204,6 +229,10 @@ int insertNode(LinkedList *ll, int index, int value){
 	if ((pre = findNode(ll, index - 1)) != NULL){
 		cur = pre->next;
 		pre->next = malloc(sizeof(ListNode));
+		if (pre->next == NULL)
+		{
+			exit(0);
+		}
 		pre->next->item = value;
 		pre->next->next = cur;
 		ll->size++;
@@ -228,7 +257,6 @@ int removeNode(LinkedList *ll, int index){
 		free(ll->head);
 		ll->head = cur;
 		ll->size--;
-
 		return 0;
 	}
 

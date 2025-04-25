@@ -2,7 +2,7 @@
 
 /* CE1007/CZ1007 Data Structures
 Lab Test: Section A - Linked List Questions
-Purpose: Implementing the required functions for Question 4 */
+Purpose: Implementing the required functions for Question 1 */
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -11,29 +11,28 @@ Purpose: Implementing the required functions for Question 4 */
 
 //////////////////////////////////////////////////////////////////////////////////
 
-typedef struct _listnode
-{
+typedef struct _listnode{
 	int item;
 	struct _listnode *next;
-} ListNode;			// You should not change the definition of ListNode
+} ListNode;
 
-typedef struct _linkedlist
-{
+typedef struct _linkedlist{
 	int size;
 	ListNode *head;
-} LinkedList;			// You should not change the definition of LinkedList
+} LinkedList;
 
 
-//////////////////////// function prototypes /////////////////////////////////////
+///////////////////////// function prototypes ////////////////////////////////////
 
-// You should not change the prototype of this function
-void moveEvenItemsToBack(LinkedList *ll);
+//You should not change the prototype of this function
+int insertSortedLL(LinkedList *ll, int item);
 
 void printList(LinkedList *ll);
 void removeAllItems(LinkedList *ll);
-ListNode * findNode(LinkedList *ll, int index);
+ListNode *findNode(LinkedList *ll, int index);
 int insertNode(LinkedList *ll, int index, int value);
 int removeNode(LinkedList *ll, int index);
+
 
 //////////////////////////// main() //////////////////////////////////////////////
 
@@ -42,18 +41,19 @@ int main()
 	LinkedList ll;
 	int c, i, j;
 	c = 1;
+
 	//Initialize the linked list 1 as an empty linked list
 	ll.head = NULL;
 	ll.size = 0;
 
-
-	printf("1: Insert an integer to the linked list:\n");
-	printf("2: Move all even integers to the back of the linked list:\n");
-	printf("0: Quit:\n");
+	printf("1: Insert an integer to the sorted linked list:\n");
+	printf("2: Print the index of the most recent input value:\n");
+	printf("3: Print sorted linked list:\n");
+	printf("0: Quit:");
 
 	while (c != 0)
 	{
-		printf("Please input your choice(1/2/0): ");
+		printf("\nPlease input your choice(1/2/3/0): ");
 		scanf("%d", &c);
 
 		switch (c)
@@ -61,13 +61,15 @@ int main()
 		case 1:
 			printf("Input an integer that you want to add to the linked list: ");
 			scanf("%d", &i);
-			j = insertNode(&ll, ll.size, i);
+			j = insertSortedLL(&ll, i);
 			printf("The resulting linked list is: ");
 			printList(&ll);
 			break;
 		case 2:
-			moveEvenItemsToBack(&ll); // You need to code this function
-			printf("The resulting linked list after moving even integers to the back of the linked list is: ");
+			printf("The value %d was added at index %d\n", i, j);
+			break;
+		case 3:
+			printf("The resulting sorted linked list is: ");
 			printList(&ll);
 			removeAllItems(&ll);
 			break;
@@ -78,71 +80,58 @@ int main()
 			printf("Choice unknown;\n");
 			break;
 		}
+
+
 	}
 	return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 
-void moveEvenItemsToBack(LinkedList *ll)
+int insertSortedLL(LinkedList *ll, int item)
 {
-	if (ll == NULL || ll->head == NULL)
-		return;
+	int index = 0;
+	ListNode *newNode = (ListNode *)malloc(sizeof(ListNode));
+	newNode -> item = item;
+	newNode -> next = NULL;
+
+	if (ll->head == NULL || item < ll->head -> item) {
+		newNode -> next = ll->head;
+		ll->head = newNode;
+		ll->size++;
+		return 0;
+	}
 
 	ListNode *cur = ll->head;
-	ListNode *prev = NULL;
-
-	ListNode *tail = ll->head;
-	while (tail->next != NULL)
-		tail = tail->next;
-
-	ListNode *end = tail;
-
-	int n = ll->size;
-
-	while (n--) {
-		if (cur->item % 2 == 0) {
-			ListNode *evenNode = cur;
-
-			if (prev == NULL) {
-				ll->head = cur->next;
-				cur = ll->head;
-			} else {
-				prev->next = cur->next;
-				cur = cur->next;
-			}
-
-			tail->next = evenNode;
-			evenNode->next = NULL;
-			tail = evenNode;
-		} else {
-			prev = cur;
-			cur = cur->next;
-		}
+	while (cur -> next != NULL && cur->next->item < item) {
+		cur = cur -> next;
+		index++;
 	}
+
+	newNode -> next = cur -> next;
+	cur -> next = newNode;
+	ll->size++;
+	return index + 1;
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-void printList(LinkedList *ll){
 
+void printList(LinkedList *ll) {
 	ListNode *cur;
-	if (ll == NULL)
+	if (ll == NULL) {
 		return;
+	}
 	cur = ll->head;
-
-	if (cur == NULL)
-		printf("Empty");
-	while (cur != NULL)
-	{
+	if (cur == NULL) {
+		printf("EMPTY");
+	}
+	while (cur != NULL) {
 		printf("%d ", cur->item);
-		cur = cur->next;
+		cur = cur -> next;
 	}
 	printf("\n");
 }
-
 
 void removeAllItems(LinkedList *ll)
 {

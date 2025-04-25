@@ -2,7 +2,7 @@
 
 /* CE1007/CZ1007 Data Structures
 Lab Test: Section A - Linked List Questions
-Purpose: Implementing the required functions for Question 4 */
+Purpose: Implementing the required functions for Question 6 */
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -27,7 +27,7 @@ typedef struct _linkedlist
 //////////////////////// function prototypes /////////////////////////////////////
 
 // You should not change the prototype of this function
-void moveEvenItemsToBack(LinkedList *ll);
+int moveMaxToFront(ListNode **ptrHead);
 
 void printList(LinkedList *ll);
 void removeAllItems(LinkedList *ll);
@@ -35,20 +35,22 @@ ListNode * findNode(LinkedList *ll, int index);
 int insertNode(LinkedList *ll, int index, int value);
 int removeNode(LinkedList *ll, int index);
 
+
 //////////////////////////// main() //////////////////////////////////////////////
 
 int main()
 {
-	LinkedList ll;
 	int c, i, j;
 	c = 1;
+
+	LinkedList ll;
 	//Initialize the linked list 1 as an empty linked list
 	ll.head = NULL;
 	ll.size = 0;
 
 
 	printf("1: Insert an integer to the linked list:\n");
-	printf("2: Move all even integers to the back of the linked list:\n");
+	printf("2: Move the largest stored value to the front of the list:\n");
 	printf("0: Quit:\n");
 
 	while (c != 0)
@@ -61,13 +63,13 @@ int main()
 		case 1:
 			printf("Input an integer that you want to add to the linked list: ");
 			scanf("%d", &i);
-			j = insertNode(&ll, ll.size, i);
+			j=insertNode(&ll, ll.size, i);
 			printf("The resulting linked list is: ");
 			printList(&ll);
 			break;
 		case 2:
-			moveEvenItemsToBack(&ll); // You need to code this function
-			printf("The resulting linked list after moving even integers to the back of the linked list is: ");
+			moveMaxToFront(&(ll.head));  // You need to code this function
+			printf("The resulting linked list after moving largest stored value to the front of the list is: ");
 			printList(&ll);
 			removeAllItems(&ll);
 			break;
@@ -82,49 +84,17 @@ int main()
 	return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
 
-void moveEvenItemsToBack(LinkedList *ll)
+int moveMaxToFront(ListNode **ptrHead)
 {
-	if (ll == NULL || ll->head == NULL)
-		return;
+    /* add your code here */
 
-	ListNode *cur = ll->head;
-	ListNode *prev = NULL;
 
-	ListNode *tail = ll->head;
-	while (tail->next != NULL)
-		tail = tail->next;
 
-	ListNode *end = tail;
-
-	int n = ll->size;
-
-	while (n--) {
-		if (cur->item % 2 == 0) {
-			ListNode *evenNode = cur;
-
-			if (prev == NULL) {
-				ll->head = cur->next;
-				cur = ll->head;
-			} else {
-				prev->next = cur->next;
-				cur = cur->next;
-			}
-
-			tail->next = evenNode;
-			evenNode->next = NULL;
-			tail = evenNode;
-		} else {
-			prev = cur;
-			cur = cur->next;
-		}
-	}
 }
 
-
-
-///////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 
 void printList(LinkedList *ll){
 
@@ -143,23 +113,7 @@ void printList(LinkedList *ll){
 	printf("\n");
 }
 
-
-void removeAllItems(LinkedList *ll)
-{
-	ListNode *cur = ll->head;
-	ListNode *tmp;
-
-	while (cur != NULL){
-		tmp = cur->next;
-		free(cur);
-		cur = tmp;
-	}
-	ll->head = NULL;
-	ll->size = 0;
-}
-
-
-ListNode *findNode(LinkedList *ll, int index){
+ListNode * findNode(LinkedList *ll, int index){
 
 	ListNode *temp;
 
@@ -247,4 +201,18 @@ int removeNode(LinkedList *ll, int index){
 	}
 
 	return -1;
+}
+
+void removeAllItems(LinkedList *ll)
+{
+	ListNode *cur = ll->head;
+	ListNode *tmp;
+
+	while (cur != NULL){
+		tmp = cur->next;
+		free(cur);
+		cur = tmp;
+	}
+	ll->head = NULL;
+	ll->size = 0;
 }

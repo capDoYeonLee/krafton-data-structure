@@ -2,7 +2,7 @@
 
 /* CE1007/CZ1007 Data Structures
 Lab Test: Section E - Binary Trees Questions
-Purpose: Implementing the required functions for Question 7 */
+Purpose: Implementing the required functions for Question 6 */
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -35,7 +35,7 @@ typedef struct _stack
 ///////////////////////// Function prototypes ////////////////////////////////////
 
 // You should not change the prototypes of these functions
-int smallestValue(BTNode *node);
+void printSmallerValues(BTNode *node, int m);
 
 BTNode *createBTNode(int item);
 
@@ -57,10 +57,10 @@ int main()
     c = 1;
     root = NULL;
 
-    printf("1: Create a binary tree.\n");
-    printf("2: Smallest value;\n");
-    printf("0: Quit;\n");
 
+    printf("1: Create a binary tree.\n");
+    printf("2: Print smaller values.\n");
+    printf("0: Quit;\n");
 
     while(c != 0)
     {
@@ -77,8 +77,11 @@ int main()
                 printf("\n");
                 break;
             case 2:
-                value = smallestValue(root);
-                printf("Smallest value of the binary tree is: %d\n",value);
+                printf("Enter an integer value to print smaller values: ");
+                scanf("%d",&value);
+                printf("The values smaller than %d are: ", value);
+                printSmallerValues(root,value);
+                printf("\n");
                 removeAll(&root);
                 break;
             case 0:
@@ -90,7 +93,7 @@ int main()
             }
         }
         else
-        {
+        {printf("\n");
             scanf("%c",&e);
         }
 
@@ -100,23 +103,16 @@ int main()
 
 //////////////////////////////////////////////////////////////////////////////////
 
-int smallestValue(BTNode *node)
+void printSmallerValues(BTNode *node, int m)
 {
-    if (node == NULL)
-        return __INT_MAX__; // 아주 큰 수를 반환해서 비교 가능하게 함
+	/* add your code here */
+    if (node == NULL) return;
+    if (node->item < m){
+      printf("%d ", node->item);
+    }
 
-    int leftMin = smallestValue(node->left);
-    int rightMin = smallestValue(node->right);
-
-    int min = node->item;
-
-    if (leftMin < min)
-        min = leftMin;
-
-    if (rightMin < min)
-        min = rightMin;
-
-    return min;
+    printSmallerValues(node->left, m);
+    printSmallerValues(node->right, m);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -244,3 +240,4 @@ void removeAll(BTNode **node)
         *node = NULL;
     }
 }
+

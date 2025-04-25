@@ -2,7 +2,7 @@
 
 /* CE1007/CZ1007 Data Structures
 Lab Test: Section E - Binary Trees Questions
-Purpose: Implementing the required functions for Question 7 */
+Purpose: Implementing the required functions for Question 8 */
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -35,7 +35,7 @@ typedef struct _stack
 ///////////////////////// Function prototypes ////////////////////////////////////
 
 // You should not change the prototypes of these functions
-int smallestValue(BTNode *node);
+int hasGreatGrandchild(BTNode *node);
 
 BTNode *createBTNode(int item);
 
@@ -51,14 +51,14 @@ void removeAll(BTNode **node);
 int main()
 {
     char e;
-    int c, value;
+    int c,value;
     BTNode *root;
 
     c = 1;
     root = NULL;
 
     printf("1: Create a binary tree.\n");
-    printf("2: Smallest value;\n");
+    printf("2: Find the great grandchildren of the binary tree.\n");
     printf("0: Quit;\n");
 
 
@@ -77,8 +77,8 @@ int main()
                 printf("\n");
                 break;
             case 2:
-                value = smallestValue(root);
-                printf("Smallest value of the binary tree is: %d\n",value);
+                printf("\nThe values stored in all nodes of the tree that has at least one great-grandchild are: ");
+                hasGreatGrandchild(root);
                 removeAll(&root);
                 break;
             case 0:
@@ -100,23 +100,20 @@ int main()
 
 //////////////////////////////////////////////////////////////////////////////////
 
-int smallestValue(BTNode *node)
+int hasGreatGrandchild(BTNode *node)
 {
-    if (node == NULL)
-        return __INT_MAX__; // 아주 큰 수를 반환해서 비교 가능하게 함
+	/* add your code here */
+    if (node == NULL) return 0;
 
-    int leftMin = smallestValue(node->left);
-    int rightMin = smallestValue(node->right);
+    int leftDepth = hasGreatGrandchild(node->left);
+    int rightDepth = hasGreatGrandchild(node->right);
+    int maxDepth = (leftDepth > rightDepth ? leftDepth : rightDepth) + 1;
 
-    int min = node->item;
+    if (maxDepth >= 3) {
+        printf("%d ", node->item);  // 증손자가 있는 경우
+    }
 
-    if (leftMin < min)
-        min = leftMin;
-
-    if (rightMin < min)
-        min = rightMin;
-
-    return min;
+    return maxDepth;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -244,3 +241,4 @@ void removeAll(BTNode **node)
         *node = NULL;
     }
 }
+
